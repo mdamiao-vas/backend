@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model person {
+  id         Int      @id @default(autoincrement())
+  name       String
+  age        Int
+  email      String   @unique
+  address    String
+  occupation String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model users {
+  id         Int      @id @default(autoincrement())
+  user_name  String
+  name       String
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  role_id    Int?
+  role       roles?   @relation(fields: [role_id], references: [id])
+
+  @@index([email])
+  @@index([role_id])
+}
+
+model roles {
+  id         Int      @id @default(autoincrement())
+  role       String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  users      users[]
+
+  @@index([role])
+}
